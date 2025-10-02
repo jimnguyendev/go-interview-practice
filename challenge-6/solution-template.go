@@ -2,8 +2,11 @@
 package challenge6
 
 import (
-	// Add any necessary imports here
+	"strings"
+	"unicode"
 )
+
+// Add any necessary imports here
 
 // CountWordFrequency takes a string containing multiple words and returns
 // a map where each key is a word and the value is the number of times that
@@ -17,6 +20,21 @@ import (
 // Input: "The quick brown fox jumps over the lazy dog."
 // Output: map[string]int{"the": 2, "quick": 1, "brown": 1, "fox": 1, "jumps": 1, "over": 1, "lazy": 1, "dog": 1}
 func CountWordFrequency(text string) map[string]int {
-	// Your implementation here
-	return nil
-} 
+	// The test case for "Let's" expects "lets", which implies apostrophes should be removed.
+	// Other punctuation like hyphens in "new-lines" should act as separators.
+	// A good strategy is to first remove apostrophes, then split by any non-alphanumeric character.
+	textWithoutApostrophes := strings.ReplaceAll(text, "'", "")
+	// Define a function that identifies separators as anything that is not a letter or a number.
+	isSeparator := func(c rune) bool {
+		return !unicode.IsLetter(c) && !unicode.IsNumber(c)
+	}
+
+	// Split the string into words based on the separators.
+	words := strings.FieldsFunc(textWithoutApostrophes, isSeparator)
+	frequency := make(map[string]int)
+	for _, word := range words {
+		// Convert to lowercase and count.
+		frequency[strings.ToLower(word)]++
+	}
+	return frequency
+}
